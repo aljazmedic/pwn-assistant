@@ -10,18 +10,16 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
 
-public abstract class JUnitConverterPanel extends javax.swing.JPanel {
-
-    /**
-     * Creates new form JUnitConverterPanel
-     */
+public abstract class UnitConverterPanel extends javax.swing.JPanel {
+    /*Main JPanel that serves as a base to all the child SystemPanel */
     public final DataSystemEncoding dataSystemEncoding;
     
-    public JUnitConverterPanel(DataSystemEncoding cs, String name) {
+    public UnitConverterPanel(DataSystemEncoding cs, String name) {
         initComponents();
         textArea.addKeyListener(new OnlyAllowKeyAdapter(cs));
-        textArea.addKeyListener(new OnKeyDownUpdate(this));
+        textArea.addKeyListener(new OnKeyDownInterpret(this));
         unitLabel.setText(name.toUpperCase());
         checkBoxUePrefix.setText("");
         checkBoxUePrefix.setVisible(cs.hasPrefix);
@@ -33,17 +31,19 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
     public abstract void interpretStringTo();
     public abstract void formatFromData();
     
-    private class OnKeyDownUpdate extends KeyAdapter{
+    private class OnKeyDownInterpret extends KeyAdapter{
         
-        JUnitConverterPanel jucp;
-        public OnKeyDownUpdate(JUnitConverterPanel jucp){
-            this.jucp = jucp;
+        UnitConverterPanel unitConverterPanel;
+        public OnKeyDownInterpret(UnitConverterPanel unitConverterPanel){
+            this.unitConverterPanel = unitConverterPanel;
         }
         
         @Override
         public void keyReleased(KeyEvent e) {
-            this.jucp.interpretStringTo();
-            System.out.println(this.jucp.unitLabel.getText() +" update array to:");
+            //interpreting textArea contents to array of integers
+            this.unitConverterPanel.interpretStringTo();
+            
+            System.out.println(this.unitConverterPanel.unitLabel.getText() +" changed values to:");
             for(int i: Main.form.converterPanel1.converterValues){
                 System.out.print(i+" ");
             }
@@ -51,21 +51,20 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
         }
         
     }
+    
     private class OnKeyDownReformat extends KeyAdapter{
         
-        JUnitConverterPanel jucp;
-        public OnKeyDownReformat(JUnitConverterPanel jucp){
-            this.jucp = jucp;
+        UnitConverterPanel unitConverterPanel;
+        public OnKeyDownReformat(UnitConverterPanel unitConverterPanel){
+            this.unitConverterPanel = unitConverterPanel;
         }
         
         @Override
         public void keyReleased(KeyEvent e) {
-            this.jucp.formatFromData();
-            System.out.println();
+            this.unitConverterPanel.formatFromData();
         }
     }
             
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -75,11 +74,11 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        copyButton = new javax.swing.JButton();
         unitLabel = new javax.swing.JLabel();
         scrollPane = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
-        jPanel1 = new javax.swing.JPanel();
+        prefixPanel = new javax.swing.JPanel();
         checkBoxUePrefix = new javax.swing.JCheckBox();
         prefixEntry = new javax.swing.JTextField();
 
@@ -90,10 +89,12 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(377, 88));
         setPreferredSize(new java.awt.Dimension(377, 88));
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        copyButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        copyButton.setText("COPY");
+        copyButton.setToolTipText("Copy text to clipboard");
+        copyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                copyButtonActionPerformed(evt);
             }
         });
 
@@ -116,7 +117,8 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
 
         prefixEntry.setBackground(new java.awt.Color(240, 240, 240));
         prefixEntry.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        prefixEntry.setText("0x");
+        prefixEntry.setText("prefix");
+        prefixEntry.setToolTipText("");
         prefixEntry.setBorder(null);
         prefixEntry.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -124,23 +126,24 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout prefixPanelLayout = new javax.swing.GroupLayout(prefixPanel);
+        prefixPanel.setLayout(prefixPanelLayout);
+        prefixPanelLayout.setHorizontalGroup(
+            prefixPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(prefixPanelLayout.createSequentialGroup()
                 .addComponent(checkBoxUePrefix)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(prefixEntry, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                .addGap(5, 5, 5))
+                .addComponent(prefixEntry)
+                .addGap(17, 17, 17))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(prefixEntry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(checkBoxUePrefix))
-                .addGap(0, 0, Short.MAX_VALUE))
+        prefixPanelLayout.setVerticalGroup(
+            prefixPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(prefixPanelLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(prefixPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(checkBoxUePrefix, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(prefixEntry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -151,27 +154,26 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(copyButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(unitLabel))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(prefixPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(13, 13, 13)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton1)
+                            .addComponent(copyButton)
                             .addComponent(unitLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(prefixPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -180,11 +182,11 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
         this.formatFromData();
     }//GEN-LAST:event_checkBoxUePrefixItemStateChanged
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
         StringSelection selection = new StringSelection(this.textArea.getText().replaceAll("[\n\t \r]+", " "));
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, selection);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_copyButtonActionPerformed
 
     private void prefixEntryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prefixEntryActionPerformed
         this.formatFromData();
@@ -193,9 +195,9 @@ public abstract class JUnitConverterPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     protected javax.swing.JCheckBox checkBoxUePrefix;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton copyButton;
     protected javax.swing.JTextField prefixEntry;
+    private javax.swing.JPanel prefixPanel;
     protected javax.swing.JScrollPane scrollPane;
     protected javax.swing.JTextArea textArea;
     protected javax.swing.JLabel unitLabel;

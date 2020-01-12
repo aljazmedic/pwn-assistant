@@ -9,7 +9,7 @@ package main;
  *
  * @author HP Omen
  */
-public class AsciiSystemPanel extends JUnitConverterPanel {
+public class AsciiSystemPanel extends UnitConverterPanel {
 
     public AsciiSystemPanel() {
         super(DataSystemEncoding.ASCII, "ASCII");
@@ -22,7 +22,7 @@ public class AsciiSystemPanel extends JUnitConverterPanel {
         for (int i = 0; i < groups.length; i++) {
             groups[i] = (int)s.charAt(i);
         }
-        Main.form.converterPanel1.updateAllExcept((JUnitConverterPanel) this, groups);
+        Main.form.converterPanel1.updateAllExcept((UnitConverterPanel) this, groups);
     }
 
     @Override

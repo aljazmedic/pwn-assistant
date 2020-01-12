@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author HP Omen
  */
-public class DecSystemPanel extends JUnitConverterPanel {
+public class DecSystemPanel extends UnitConverterPanel {
 
     public DecSystemPanel() {
         super(DataSystemEncoding.DEC, "DEC");
@@ -24,7 +24,7 @@ public class DecSystemPanel extends JUnitConverterPanel {
         //split then reduce
         String s = this.textArea.getText();
         if (s.length() == 0) {
-            Main.form.converterPanel1.updateAllExcept((JUnitConverterPanel) this, new int[0]);
+            Main.form.converterPanel1.updateAllExcept((UnitConverterPanel) this, new int[0]);
         }
         s = s.toLowerCase().replace(this.dataSystemEncoding.prefix, ""); //Get rid of all prefixes
         List<String> matches = Util.matchAllRegex(s, "([0-9]{1,3})");
@@ -44,16 +44,16 @@ public class DecSystemPanel extends JUnitConverterPanel {
         for (int idx = 0; idx < values.size(); idx++) {
             groups[idx] = (int) values.get(idx);
         }
-        Main.form.converterPanel1.updateAllExcept((JUnitConverterPanel) this, groups);
+        Main.form.converterPanel1.updateAllExcept((UnitConverterPanel) this, groups);
     }
 
     @Override
     public void formatFromData() {
         String s = "" + Main.form.converterPanel1.converterValues[0];
         for (int i = 1; i < Main.form.converterPanel1.converterValues.length; i++) {
-            s += Main.form.converterPanel1.converterValues[i];
+            s += " "+Main.form.converterPanel1.converterValues[i];
         }
-        s = this.dataSystemEncoding.formatText(s, (String)Main.form.converterPanel1.getDelimiter());
+        //s = this.dataSystemEncoding.formatText(s, (String)Main.form.converterPanel1.getDelimiter());
         this.textArea.setText(s);
     }
 }

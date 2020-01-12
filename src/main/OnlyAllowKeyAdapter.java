@@ -10,8 +10,8 @@ import java.awt.event.KeyEvent;
 
 public class OnlyAllowKeyAdapter extends KeyAdapter{
     String allowed;
-    public OnlyAllowKeyAdapter(DataSystemEncoding allowed){
-        this.allowed = allowed.chars;
+    public OnlyAllowKeyAdapter(DataSystemEncoding allowedEncoding){
+        this.allowed = allowedEncoding.chars;
     }
     @Override
     public void keyTyped(KeyEvent ke) {
@@ -20,7 +20,6 @@ public class OnlyAllowKeyAdapter extends KeyAdapter{
                 typedKey==' ' || this.allowed.indexOf(typedKey) != -1)
             ){
             ke.consume();
-            return;
         }
     }
 }

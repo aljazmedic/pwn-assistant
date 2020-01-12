@@ -10,13 +10,15 @@ package main;
  * @author Dijak
  */
 public class Main {
-    public static Obrazec form;
+    public static UporabniObrazec form;
+    public static ObrazecPrijava loginForm;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        form = new Obrazec();
-        form.setVisible(true);
+        loginForm = new ObrazecPrijava();
+        form = new UporabniObrazec();
+        loginForm.setVisible(true);
         form.requestFocus();
     }
 }

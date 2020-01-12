@@ -5,30 +5,38 @@
  */
 package main;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author HP Omen
  */
 public class ConverterPanel extends javax.swing.JPanel {
 
-    public static JUnitConverterPanel[] jucps;
+    public static UnitConverterPanel[] jucps;
     public int[] converterValues;
 
     public ConverterPanel() {
         initComponents();
         converterValues = new int[0];
-        jucps = new JUnitConverterPanel[]{
+        jucps = new UnitConverterPanel[]{
             asciiSystemPanel,
             hexSystemPanel,
             decSystemPanel1
         };
+        batchString = "";
     }
 
-    public void updateAllExcept(JUnitConverterPanel jucp, int[] newValues) {
+    public void updateAllExcept(UnitConverterPanel unitConverterPanel, int[] newValues) {
         this.converterValues = newValues;
-        if (jucp != null) {
-            System.out.print("Update all except ");
-            System.out.println(jucp.unitLabel.getText());
+        System.out.print("Formatting all fields");
+        if (unitConverterPanel != null) {
+            System.out.println(unitConverterPanel.unitLabel.getText());
         }
         for (int i : converterValues) {
             System.out.print(i + " ");
@@ -37,16 +45,16 @@ public class ConverterPanel extends javax.swing.JPanel {
         if (converterValues.length == 0) {
             return;
         }
-        if (jucp == null || asciiSystemPanel != jucp) {
+        if (unitConverterPanel == null || asciiSystemPanel != unitConverterPanel) {
             asciiSystemPanel.formatFromData();
         }
-        if (jucp == null || hexSystemPanel != jucp) {
+        if (unitConverterPanel == null || hexSystemPanel != unitConverterPanel) {
             hexSystemPanel.formatFromData();
         }
-        if (jucp == null || decSystemPanel1 != jucp) {
+        if (unitConverterPanel == null || decSystemPanel1 != unitConverterPanel) {
             decSystemPanel1.formatFromData();
         }
-        if (jucp == null || binSystemPanel != jucp) {
+        if (unitConverterPanel == null || binSystemPanel != unitConverterPanel) {
             binSystemPanel.formatFromData();
         }
 
@@ -61,19 +69,28 @@ public class ConverterPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        fileChooser = new javax.swing.JFileChooser();
         asciiSystemPanel = new main.AsciiSystemPanel();
         hexSystemPanel = new main.HexSystemPanel();
         decSystemPanel1 = new main.DecSystemPanel();
         binSystemPanel = new main.BinSystemPanel();
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
+        jButton1 = new javax.swing.JButton();
 
         jLabel1.setText("Delimiter:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"< >", "<;>", "<,>", "<>", "<:>", "<->"}));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"< > space", "<;> semicolon", "<,> comma", "<> none", "<:> colon", "<-> dash"}));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("LOAD FILE");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -84,16 +101,18 @@ public class ConverterPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(asciiSystemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
-                        .addComponent(decSystemPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(binSystemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(hexSystemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(asciiSystemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                    .addComponent(hexSystemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(binSystemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(decSystemPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addGap(115, 115, 115)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -101,22 +120,48 @@ public class ConverterPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(asciiSystemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(asciiSystemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hexSystemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(binSystemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(decSystemPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         updateAllExcept(null, this.converterValues);
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        fileChooser.setCurrentDirectory(new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+                .getParentFile().getParentFile());
+        int returnVal = fileChooser.showOpenDialog(this);
+        String r = "";
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File f = fileChooser.getSelectedFile();
+            String name = f.getName();
+            if(f.isDirectory() || !f.canRead() ||
+                    !name.endsWith(".txt")){
+                JOptionPane.showMessageDialog(this, "Choose a valild txt file!", "Napaka", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+                while (br.ready()) {
+                    r += br.readLine();
+                }
+                this.asciiSystemPanel.textArea.setText(r);
+                this.asciiSystemPanel.interpretStringTo();
+            } catch (IOException ioe) {
+                System.out.println("Error accessing the file! " + ioe.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
     public String getDelimiter() {
         try {
             return ((String) this.jComboBox1.getSelectedItem()).split("<")[1].split(">")[0];
@@ -124,12 +169,14 @@ public class ConverterPanel extends javax.swing.JPanel {
             return "";
         }
     }
-
+    private String batchString;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private main.AsciiSystemPanel asciiSystemPanel;
     private main.BinSystemPanel binSystemPanel;
     private main.DecSystemPanel decSystemPanel1;
+    private javax.swing.JFileChooser fileChooser;
     private main.HexSystemPanel hexSystemPanel;
+    private javax.swing.JButton jButton1;
     public javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables

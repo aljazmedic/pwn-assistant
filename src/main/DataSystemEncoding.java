@@ -33,17 +33,17 @@ public enum DataSystemEncoding {
     public String prefix, pad;
 
     private DataSystemEncoding(String value, boolean ignoreWhitespace, int groupBy, String prefix, String pad, boolean forwardPad) {
+        //Napravi enum s predefiniranimi lastnostmi
         this.chars = value;
         this.ignoreWhitespace = ignoreWhitespace;
         this.groupBy = groupBy;
         this.prefix = prefix;
         this.pad = pad;
         this.forwardPad = forwardPad;
-        assert !chars.contains(this.pad) : "Pad in allowed characters!"; //just to be sure
-        assert !chars.contains(this.prefix) : "Prefix in allowed characters!";
-        hasPrefix = prefix.length() != 0;
+        this.hasPrefix = prefix.length() != 0;
     }
     public String formatText(String txtIn, String delimiter) {
+        // Dodatna funkcija, ki dopušča rabo brez nekaterih argumentov
         return formatText(txtIn, delimiter, false, "");
     }
 
@@ -71,30 +71,7 @@ public enum DataSystemEncoding {
         }
         return r;
     }
-    /* public String formatText(int[] txtIn, boolean usePrefix) {
-        //txtIn = parseText(txtIn);
-        String r = "";
-        if (hasPrefix && usePrefix) {
-            r += prefix;
-        }
-        //remove spaces asap
-        if (this.ignoreWhitespace) {
-            txtIn = txtIn.replaceAll("[\t \n\r]+", "");
-        }
-        if (this.groupBy == 0 || !this.ignoreWhitespace) {
-            return r + txtIn;
-        }
-        //split into n-uples, join by space (and prefix)
-        r += txtIn.substring(0, Math.min(groupBy, txtIn.length()));
-        for (int i = 1; i < (txtIn.length() - 1) / this.groupBy + 1; i++) {
-            r += this.delimiter;
-            if (hasPrefix && usePrefix) {
-                r += prefix;
-            }
-            r += extractBetween(txtIn, i * groupBy, (i + 1) * groupBy);
-        }
-        return r;
-    }*/
+    
     private String extractBetween(String s, int startIndex, int lastIndex) {
         //Nothing special
         if (lastIndex <= s.length()) {
@@ -113,26 +90,5 @@ public enum DataSystemEncoding {
         {
             return s.substring(startIndex, s.length()) + _pad;
         }
-    }
-
-    /*public String[] parseText(String txtIn) {
-        System.out.println(txtIn);
-        if(hasPrefix){
-            txtIn = txtIn.replaceAll(prefix, "");
-        }
-        System.out.println(txtIn); //TODO Regex match by whitespace
-        if (this.ignoreWhitespace) {
-            String[] parts = txtIn.split("[\t \n\r]+");
-        }
-        return txtIn;
-    }*/
-
-    public static void main(String[] args) {
-        String[] tests = new String[]{
-            "YW5     5IGNhc  m5hbCBwbGVhc3VyZQ",
-            "2320b1230brewfrgdrte as daas asd gthgdfsfghz4terhgdb",
-            "21e3wrf    w efdd  qewdfdsarewgfdfgdsg"
-        };
-        DataSystemEncoding dse = DataSystemEncoding.OCT;
     }
 }

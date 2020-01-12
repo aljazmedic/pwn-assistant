@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author HP Omen
  */
-public class BinSystemPanel extends JUnitConverterPanel {
+public class BinSystemPanel extends UnitConverterPanel {
 
     public BinSystemPanel() {
         super(DataSystemEncoding.BIN, "BIN");
@@ -25,7 +25,7 @@ public class BinSystemPanel extends JUnitConverterPanel {
         //split then reduce
         String s = this.textArea.getText();
         if(s.length()==0)
-            Main.form.converterPanel1.updateAllExcept((JUnitConverterPanel) this, new int[0]);
+            Main.form.converterPanel1.updateAllExcept((UnitConverterPanel) this, new int[0]);
         s = s.toLowerCase().replace(this.dataSystemEncoding.prefix, " "+this.dataSystemEncoding.prefix); //Get rid of all prefixes
         s = s.toLowerCase().replace(this.dataSystemEncoding.prefix, ""); //Get rid of all prefixes
         List<String> matches = Util.matchAllRegex(s, "(?:0[bB])?([0-1]{1,8})");
@@ -47,7 +47,7 @@ public class BinSystemPanel extends JUnitConverterPanel {
         for(int idx = 0; idx <values.size(); idx++){
             groups[idx] = (int) values.get(idx);
         }
-        Main.form.converterPanel1.updateAllExcept((JUnitConverterPanel) this, groups);
+        Main.form.converterPanel1.updateAllExcept((UnitConverterPanel) this, groups);
     }
 
     @Override

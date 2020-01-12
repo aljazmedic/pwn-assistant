@@ -8,13 +8,12 @@ package main;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import main.Util;
 
 /**
  *
  * @author HP Omen
  */
-public class HexSystemPanel extends JUnitConverterPanel {
+public class HexSystemPanel extends UnitConverterPanel {
 
     public HexSystemPanel() {
         super(DataSystemEncoding.HEX, "HEX");
@@ -25,30 +24,24 @@ public class HexSystemPanel extends JUnitConverterPanel {
     public void interpretStringTo() {
         //split then reduce
         String s = this.textArea.getText();
-        if(s.length()==0)
-        Main.form.converterPanel1.updateAllExcept((JUnitConverterPanel) this, new int[0]);
-        s = s.toLowerCase().replace(this.dataSystemEncoding.prefix, " "+this.dataSystemEncoding.prefix); //Get rid of all prefixes
-        s = s.toLowerCase().replace(this.dataSystemEncoding.prefix, ""); //Get rid of all prefixes
+        if(s.length()==0){
+            Main.form.converterPanel1.updateAllExcept((UnitConverterPanel) this, new int[0]);
+        }
+        s = s.toLowerCase();
+        s = s.replace(this.dataSystemEncoding.prefix, " "); //Znebi se vseh 
         List<String> matches = Util.matchAllRegex(s, "(?:0[xX])?([0-9a-fA-F]{1,2})");
         List<Integer> values = new ArrayList<>();
         for (Iterator<String> it = matches.iterator(); it.hasNext();) {
             String thisMatch = it.next();
                 values.add(Integer.parseInt(thisMatch, 16));
             int i = 0;
-            /*while(i < thisMatch.length()){
-                String built = "";
-                do{
-                    built += thisMatch.charAt(i);
-                    i++;
-                }while(i < thisMatch.length() && Integer.parseInt(built, 16) <= 16);
-            }*/
         }
         
         int[] groups = new int[values.size()];
         for(int idx = 0; idx <values.size(); idx++){
             groups[idx] = (int) values.get(idx);
         }
-        Main.form.converterPanel1.updateAllExcept((JUnitConverterPanel) this, groups);
+        Main.form.converterPanel1.updateAllExcept((UnitConverterPanel) this, groups);
     }
 
     @Override
